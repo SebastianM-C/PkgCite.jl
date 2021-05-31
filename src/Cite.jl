@@ -1,9 +1,9 @@
 module Cite
 
-export collect_citations
+export get_citations
 
 using Pkg
-using Bibliography: import_bibtex, Entry
+using Bibliography: import_bibtex, export_bibtex, Entry
 using DataStructures
 
 function citation_path(pkg)
@@ -29,7 +29,7 @@ end
 """
     collect_citations()
 
-
+Collect the citations from all the dependencies in the current environment.
 """
 function collect_citations()
     @info "Generating citation report for the current environment"
@@ -43,6 +43,14 @@ function collect_citations()
     end
 
     return citations
+end
+
+function get_citations(;filename="julia_citations.bib")
+    citations = collect_citations()
+    if isfile(filename)
+        @warn "Overwriting $filename"
+    end
+    export_bibtex(filename, citations)
 end
 
 end
