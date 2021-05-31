@@ -14,7 +14,7 @@ Right now this package is not yet registered. If you want to try it, use
 
 ## Usage
 
-To get all the dependencies in the current environments, use
+To get all the dependencies in the current environment, use
 ```julia
 using Cite
 
@@ -22,3 +22,5 @@ using Cite
 
 get_citations()
 ```
+This will create a `julia_citations.bib` file with all the citations collected form
+the CITATION.bib files corresponding to the dependecies of the current active environment.
