@@ -50,6 +50,10 @@ function get_citations(;filename="julia_citations.bib")
     if isfile(filename)
         @warn "Overwriting $filename"
     end
+    if isempty(citations)
+        @warn "No citations found in current environment"
+        return nothing
+    end
     export_bibtex(filename, citations)
 end
 
