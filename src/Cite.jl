@@ -45,6 +45,14 @@ function collect_citations()
     return citations
 end
 
+"""
+    get_citations(; filename="julia_citations.bib")
+
+This will create a .bib file with all the citations collected form
+the CITATION.bib files corresponding to the dependecies of
+the current active environment. Use `filename` to change the name of the
+file.
+"""
 function get_citations(;filename="julia_citations.bib")
     citations = collect_citations()
     if isfile(filename)
