@@ -3,6 +3,12 @@ uuid = "50d0efc5-baaf-4329-a409-faca2d9bd902"
 authors = ["Sebastian Micluța-Câmpeanu <m.c.sebastian95@gmail.com>"]
 version = "0.1.0"
 
+[deps]
+Bibliography = "f1be7e48-bf82-45af-a471-ae754a193061"
+DataStructures = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+PkgDeps = "839e9fc8-855b-5b3c-a3b7-2833d3dd1f59"
+
 [compat]
 julia = "1"
 
