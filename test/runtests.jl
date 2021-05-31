@@ -6,6 +6,7 @@ using Pkg
 @testset "Cite.jl" begin
     test_env = "test_env"
     Pkg.activate(test_env)
+    Pkg.instantiate()
     Pkg.status()
 
     citations = collect_citations()
