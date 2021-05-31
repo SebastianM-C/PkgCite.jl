@@ -5,7 +5,7 @@ using Pkg
 @testset "Cite.jl" begin
     Pkg.activate("test_env")
 
-    citations = get_citations()
+    citations = collect_citations()
     @test haskey(citations, "DifferentialEquations.jl-2017")
     @test haskey(citations, "AbstractAlgebra.jl-2017")
     @test haskey(citations, "quadgk")

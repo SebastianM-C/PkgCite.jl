@@ -1,6 +1,6 @@
 module Cite
 
-export get_citations
+export collect_citations
 
 using Pkg
 using Bibliography: import_bibtex, Entry
@@ -26,7 +26,12 @@ function get_citation(pkg)
     end
 end
 
-function get_citations()
+"""
+    collect_citations()
+
+
+"""
+function collect_citations()
     @info "Generating citation report for the current environment"
     deps = Pkg.dependencies()
     citations = DataStructures.OrderedDict{String,Entry}()

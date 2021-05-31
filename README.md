@@ -16,5 +16,5 @@ Right now this package is not yet registered. If you want to try it, use
 
 To get all the dependencies in the current environments, use
 ```julia
-get_citations()
+collect_citations()
 ```
