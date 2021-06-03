@@ -1,8 +1,9 @@
 module Cite
 
-using DataStructures: getkey
+using Pkg: include
+using DataStructures: getkey, values
 using Base: String
-export get_citations
+export get_citations, get_tool_citation
 
 using Pkg
 using Bibliography: import_bibtex, export_bibtex, Entry

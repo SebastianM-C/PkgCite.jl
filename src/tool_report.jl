@@ -1,27 +1,69 @@
-function cite(name, key; cite_commands)
-    cmd = get(cite_commands, key, "\\cite")
-    cmd * "[" * name * "]" * "{" * key * "}"
-end
-
 function cite_package(name, bib; cite_commands)
     if length(bib) == 1
         key = only(keys(bib))
-        cite(name, key; cite_commands)
-    else
+        cmd = get(cite_commands, name, DEFAULT_CITE)
 
+        cmd * "[" * name * "]" * "{" * key * "}"
+    else
+        ks = keys(bib)
+        # determine common cite command
+        cmd = get(cite_commands, first(ks), DEFAULT_CITE)
+        for key in ks
+            cmdᵢ = get(cite_commands, name, DEFAULT_CITE)
+            # all the keys must have the same command
+            if cmdᵢ ≠ cmd
+                # fall back to DEFAULT_CITE
+                cmd = DEFAULT_CITE
+            end
+        end
+
+        cmd * "[" * name * "]" * "{" * join(ks, ',') * "}"
     end
 end
 
-function start_sentence(;cite_commands=Dict{String,String}())
-    bib = import_bibtex(joinpath(@__DIR__, "julia.bib"))
-    key = only(keys(bib))
-    julia = cite("Julia v$VERSION", key; cite_commands)
-    "This work was done in $julia and made use of the packages: "
+function start_sentence(n; cite_commands=Dict{String,String}())
+    bib = get_julia_bib()
+    julia = cite_package("Julia v$VERSION", bib; cite_commands)
+    if n == 1
+        "This work was done in $julia and made use of the "
+    else
+        "This work was done in $julia and made use of the following packages: "
+    end
 end
 
-function get_tool_citation(;cite_commands=Dict{String,String}())
-    start = start_sentence(;cite_commands)
-    pkg_citations = collect_citations()[2]
+function sentence_ending(n)
+    if n == 1
+        " package."
+    else
+        "."
+    end
+end
 
-    pkg_citations = [cite(key, name; cite_commands) for name in keys(pkg_citations)]
+function get_tool_citation(;
+    jl = true,
+    cite_commands=Dict{String,String}(),
+    filename="julia_citations.bib")
+
+    pkg_citations = collect_citations()
+    pkgs = keys(pkg_citations)
+    n = length(pkgs)
+
+    start = start_sentence(n; cite_commands)
+
+    citations = String[]
+    for pkg in pkgs
+        pkg_name = jl ? pkg * ".jl" : pkg
+        c = pkg_name * cite_package(pkg, pkg_citations[pkg]; cite_commands)
+        push!(citations, c)
+    end
+
+    ending = sentence_ending(n)
+
+    cite_sentence = start * join(citations, ", ", " and ") * ending
+    @info "The following sentence was copied to your clipboard:"
+    println(cite_sentence)
+    clipboard(cite_sentence)
+
+    julia_bib = get_julia_bib()
+    export_citations(filename, merge!(julia_bib, pkg_citations))
 end
