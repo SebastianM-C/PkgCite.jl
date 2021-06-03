@@ -24,31 +24,21 @@ end
 Collect the citations from all the dependencies in the current environment.
 """
 function collect_citations()
-    @info "Generating citation report for the current environment"
+    @debug "Generating citation report for the current environment"
     deps = Pkg.dependencies()
-    all_citations = DataStructures.OrderedDict{String,Entry}()
     pkg_citations = Dict{String, DataStructures.OrderedDict{String,Entry}}()
     for pkg in values(deps)
         c = get_citation(pkg)
         if !isnothing(c)
-            merge!(all_citations, c)
             push!(pkg_citations, pkg.name=>c)
         end
     end
 
-    return all_citations, pkg_citations
+    return pkg_citations
 end
 
-"""
-    get_citations(; filename="julia_citations.bib")
-
-This will create a .bib file with all the citations collected form
-the CITATION.bib files corresponding to the dependecies of
-the current active environment. Use `filename` to change the name of the
-file.
-"""
-function get_citations(;filename="julia_citations.bib")
-    citations = collect_citations()[1]
+function export_citations(filename, pkg_citations)
+    citations = merge!(values(pkg_citations)...)
     if isfile(filename)
         @warn "Overwriting $filename"
     end
@@ -57,4 +47,23 @@ function get_citations(;filename="julia_citations.bib")
         return nothing
     end
     export_bibtex(filename, citations)
+    pkgs = join(keys(pkg_citations), ", ", " and ")
+    @info "A $filename file with the citations for $pkgs" *
+    " was generated in the current working directory ($(pwd()))."
+end
+
+"""
+    get_citations(; filename="julia_citations.bib")
+
+This function will create a .bib file with all the citations collected form
+the CITATION.bib files corresponding to the dependecies of
+the current active environment. Use `filename` to change the name of the
+file.
+"""
+function get_citations(;filename="julia_citations.bib")
+    pkg_citations = collect_citations()
+
+    export_citations(filename, pkg_citations)
+
+    return nothing
 end
