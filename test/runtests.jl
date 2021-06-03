@@ -1,5 +1,5 @@
 using Cite
-using Cite: collect_citations
+using Cite: collect_citations, get_tool_citation
 using Test
 using Pkg
 
@@ -18,4 +18,6 @@ using Pkg
 
     get_citations()
     @test isfile(joinpath(@__DIR__, "julia_citations.bib"))
+
+    get_tool_citation()
 end
