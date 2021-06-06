@@ -42,6 +42,7 @@ end
 function get_tool_citation(io::IO=stdout;
     jl = true,
     texttt = false,
+    copy = true,
     cite_commands=Dict{String,String}(),
     filename="julia_citations.bib")
 
@@ -63,9 +64,11 @@ function get_tool_citation(io::IO=stdout;
 
     cite_sentence = start * join(citations, ", ", " and ") * ending
     try
-        clipboard(cite_sentence)
-        @info "The following sentence was copied to your clipboard:"
-        println(io, cite_sentence)
+        if copy
+            clipboard(cite_sentence)
+            @info "The following sentence was copied to your clipboard:"
+            println(io, cite_sentence)
+        end
     catch e
         @error e
     end
