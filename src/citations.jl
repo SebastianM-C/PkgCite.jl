@@ -37,8 +37,16 @@ function collect_citations()
     return pkg_citations
 end
 
+function bibliography(pkg_citations)
+    merge!(values(pkg_citations)...)
+end
+
+function cited_packages(pkg_citations)
+    keys(pkg_citations)
+end
+
 function export_citations(filename, pkg_citations)
-    citations = merge!(values(pkg_citations)...)
+    citations = bibliography(pkg_citations)
     if isfile(filename)
         @warn "Overwriting $filename"
     end
@@ -47,7 +55,7 @@ function export_citations(filename, pkg_citations)
         return nothing
     end
     export_bibtex(filename, citations)
-    pkgs = join(keys(pkg_citations), ", ", " and ")
+    pkgs = join(cited_packages(pkg_citations), ", ", " and ")
     @info "A $filename file with the citations for $pkgs" *
     " was generated in the current working directory ($(pwd()))."
 end
