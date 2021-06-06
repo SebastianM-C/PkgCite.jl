@@ -38,7 +38,7 @@ function collect_citations()
 end
 
 function bibliography(pkg_citations)
-    merge!(values(pkg_citations)...)
+    merge(values(pkg_citations)...)
 end
 
 function cited_packages(pkg_citations)
