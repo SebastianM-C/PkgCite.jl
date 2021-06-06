@@ -21,10 +21,10 @@ function cite_package(name, bib; cite_commands)
     end
 end
 
-function start_sentence(n; cite_commands=Dict{String,String}())
+function start_sentence(n, cite_commands=Dict{String,String}())
     bib = get_julia_bib()
     julia = cite_package("Julia v$VERSION", bib; cite_commands)
-    if n == 1
+    if n < 3
         "This work was done in $julia and made use of the "
     else
         "This work was done in $julia and made use of the following packages: "
@@ -34,9 +34,31 @@ end
 function sentence_ending(n)
     if n == 1
         " package."
+    elseif n == 2
+        " packages."
     else
         "."
     end
+end
+
+function make_sentence(pkg_citations; cite_commands, jl=true, texttt=false)
+    pkgs = keys(pkg_citations)
+    n = length(pkgs)
+
+    start = start_sentence(n, cite_commands)
+    ending = sentence_ending(n)
+
+    citations = String[]
+    for pkg in pkgs
+        pkg_name = jl ? pkg * ".jl" : pkg
+        pkg_name = texttt ? add_texttt(pkg_name) : pkg_name
+        c = pkg_name * cite_package(pkg, pkg_citations[pkg]; cite_commands)
+        push!(citations, c)
+    end
+
+    middle = n == 2 ? citations[1] * " and " * citations[2] : join(citations, ", ", " and ")
+
+    return start * middle * ending
 end
 
 function get_tool_citation(io::IO=stdout;
@@ -47,22 +69,9 @@ function get_tool_citation(io::IO=stdout;
     filename="julia_citations.bib")
 
     pkg_citations = collect_citations()
-    pkgs = keys(pkg_citations)
-    n = length(pkgs)
 
-    start = start_sentence(n; cite_commands)
+    cite_sentence = make_sentence(pkg_citations; cite_commands, jl, texttt)
 
-    citations = String[]
-    for pkg in pkgs
-        pkg_name = jl ? pkg * ".jl" : pkg
-        pkg_name = texttt ? add_texttt(pkg_name) : pkg_name
-        c = pkg_name * cite_package(pkg, pkg_citations[pkg]; cite_commands)
-        push!(citations, c)
-    end
-
-    ending = sentence_ending(n)
-
-    cite_sentence = start * join(citations, ", ", " and ") * ending
     try
         if copy
             clipboard(cite_sentence)
