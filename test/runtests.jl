@@ -1,5 +1,5 @@
 using Cite
-using Cite: collect_citations, bibliography, cited_packages
+using Cite: collect_citations, bibliography, cited_packages, make_sentence
 using Bibliography
 using Test
 using Pkg
@@ -48,31 +48,50 @@ using Pkg
     end
 
     @testset "Cite sentence" begin
-        io = IOBuffer()
-        get_tool_citation(io)
-        seekstart(io)
-        str = read(io, String)
-
+        str = make_sentence(citations, cite_commands=Dict{String,String}())
         @test str == "This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
-        "and made use of the following packages: "*
-        "LabelledArrays.jl\\cite[LabelledArrays]{DifferentialEquations.jl-2017}, "*
-        "QuadGK.jl\\cite[QuadGK]{quadgk}, Symbolics.jl\\cite[Symbolics]{gowda2021high}, "*
-        "RecursiveArrayTools.jl\\cite[RecursiveArrayTools]{DifferentialEquations.jl-2017}, "*
-        "ArrayInterface.jl\\cite[ArrayInterface]{DifferentialEquations.jl-2017} and "*
-        "AbstractAlgebra.jl\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}.\n"
+            "and made use of the following packages: "*
+            "LabelledArrays.jl\\cite[LabelledArrays]{DifferentialEquations.jl-2017}, "*
+            "QuadGK.jl\\cite[QuadGK]{quadgk}, Symbolics.jl\\cite[Symbolics]{gowda2021high}, "*
+            "RecursiveArrayTools.jl\\cite[RecursiveArrayTools]{DifferentialEquations.jl-2017}, "*
+            "ArrayInterface.jl\\cite[ArrayInterface]{DifferentialEquations.jl-2017} and "*
+            "AbstractAlgebra.jl\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}.\n"
 
-        io = IOBuffer()
-        get_tool_citation(io, jl=false)
-        seekstart(io)
-        str = read(io, String)
-
+        str = make_sentence(citations, cite_commands=Dict{String,String}(), jl=false)
         @test str == "This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
-        "and made use of the following packages: "*
-        "LabelledArrays\\cite[LabelledArrays]{DifferentialEquations.jl-2017}, "*
-        "QuadGK\\cite[QuadGK]{quadgk}, Symbolics\\cite[Symbolics]{gowda2021high}, "*
-        "RecursiveArrayTools\\cite[RecursiveArrayTools]{DifferentialEquations.jl-2017}, "*
-        "ArrayInterface\\cite[ArrayInterface]{DifferentialEquations.jl-2017} and "*
-        "AbstractAlgebra\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}.\n"
+            "and made use of the following packages: "*
+            "LabelledArrays\\cite[LabelledArrays]{DifferentialEquations.jl-2017}, "*
+            "QuadGK\\cite[QuadGK]{quadgk}, Symbolics\\cite[Symbolics]{gowda2021high}, "*
+            "RecursiveArrayTools\\cite[RecursiveArrayTools]{DifferentialEquations.jl-2017}, "*
+            "ArrayInterface\\cite[ArrayInterface]{DifferentialEquations.jl-2017} and "*
+            "AbstractAlgebra\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}.\n"
+
+        @testset "Clipboard" begin
+            io = IOBuffer()
+            get_tool_citation(io)
+            seekstart(io)
+            str = read(io, String)
+
+            @test_broken str == "This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
+            "and made use of the following packages: "*
+            "LabelledArrays.jl\\cite[LabelledArrays]{DifferentialEquations.jl-2017}, "*
+            "QuadGK.jl\\cite[QuadGK]{quadgk}, Symbolics.jl\\cite[Symbolics]{gowda2021high}, "*
+            "RecursiveArrayTools.jl\\cite[RecursiveArrayTools]{DifferentialEquations.jl-2017}, "*
+            "ArrayInterface.jl\\cite[ArrayInterface]{DifferentialEquations.jl-2017} and "*
+            "AbstractAlgebra.jl\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}.\n"
+
+            io = IOBuffer()
+            get_tool_citation(io, jl=false)
+            seekstart(io)
+            str = read(io, String)
+
+            @test_broken str == "This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
+            "and made use of the following packages: "*
+            "LabelledArrays\\cite[LabelledArrays]{DifferentialEquations.jl-2017}, "*
+            "QuadGK\\cite[QuadGK]{quadgk}, Symbolics\\cite[Symbolics]{gowda2021high}, "*
+            "RecursiveArrayTools\\cite[RecursiveArrayTools]{DifferentialEquations.jl-2017}, "*
+            "ArrayInterface\\cite[ArrayInterface]{DifferentialEquations.jl-2017} and "*
+            "AbstractAlgebra\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}.\n"
+        end
     end
-
 end
