@@ -19,18 +19,24 @@ function get_citation(pkg)
 end
 
 """
-    collect_citations()
+    collect_citations(only_direct::Bool)
 
 Collect the citations from all the dependencies in the current environment.
 """
-function collect_citations()
+function collect_citations(only_direct::Bool)
     @debug "Generating citation report for the current environment"
     deps = Pkg.dependencies()
     pkg_citations = Dict{String, DataStructures.OrderedDict{String,Entry}}()
     for pkg in values(deps)
         c = get_citation(pkg)
         if !isnothing(c)
-            push!(pkg_citations, pkg.name=>c)
+            if only_direct
+                if pkg.is_direct_dep
+                    push!(pkg_citations, pkg.name=>c)
+                end
+            else
+                push!(pkg_citations, pkg.name=>c)
+            end
         end
     end
 
@@ -67,8 +73,8 @@ the CITATION.bib files corresponding to the dependecies of
 the current active environment. Use `filename` to change the name of the
 file.
 """
-function get_citations(;filename="julia_citations.bib")
-    pkg_citations = collect_citations()
+function get_citations(;only_direct=false, filename="julia_citations.bib")
+    pkg_citations = collect_citations(only_direct)
 
     if isempty(pkg_citations)
         @warn "No citations found in current environment"

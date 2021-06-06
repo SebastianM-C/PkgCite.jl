@@ -47,6 +47,11 @@ import Pkg
         @test haskey(bib, "gowda2021high")
     end
 
+    @testset "Only direct dependencies" begin
+        citations = collect_citations(true)
+        pkgs = cited_packages(citations)
+        @test only(pkgs) == "Symbolics"
+    end
     @testset "Cite sentence" begin
         str = make_sentence(citations, cite_commands=Dict{String,String}())
         @test str == "This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
