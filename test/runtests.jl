@@ -2,7 +2,7 @@ using Cite
 using Cite: collect_citations, bibliography, cited_packages, make_sentence
 using Bibliography
 using Test
-using Pkg
+import Pkg
 
 @testset "Cite.jl" begin
     @testset "Empty env" begin

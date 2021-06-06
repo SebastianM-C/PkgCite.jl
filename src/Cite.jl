@@ -5,7 +5,7 @@ using DataStructures: getkey, values
 using Base: String
 export get_citations, get_tool_citation
 
-using Pkg
+import Pkg
 using Bibliography: import_bibtex, export_bibtex, Entry
 using DataStructures
 using InteractiveUtils
