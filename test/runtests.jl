@@ -14,7 +14,7 @@ import Pkg
     Pkg.instantiate()
     Pkg.status()
 
-    citations = collect_citations()
+    citations = collect_citations(false)
     @show citations
     @testset "Packages" begin
         pkgs = cited_packages(citations)
