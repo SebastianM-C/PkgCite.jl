@@ -39,7 +39,7 @@ function sentence_ending(n)
     end
 end
 
-function get_tool_citation(;
+function get_tool_citation(io::IO=stdout;
     jl = true,
     texttt = false,
     cite_commands=Dict{String,String}(),
@@ -62,10 +62,10 @@ function get_tool_citation(;
     ending = sentence_ending(n)
 
     cite_sentence = start * join(citations, ", ", " and ") * ending
-    println(cite_sentence)
     try
         clipboard(cite_sentence)
         @info "The following sentence was copied to your clipboard:"
+        println(io, cite_sentence)
     catch
         @error e
     end
