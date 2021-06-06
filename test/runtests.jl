@@ -6,7 +6,7 @@ using Pkg
 
 @testset "Cite.jl" begin
     @testset "Empty env" begin
-        @test_warn "No citations found in current environment" get_citations()
+        @test_logs (:warn, "No citations found in current environment") get_citations()
     end
 
     test_env = "test_env"
