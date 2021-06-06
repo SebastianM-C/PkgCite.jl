@@ -55,7 +55,7 @@ import Pkg
             "QuadGK.jl\\cite[QuadGK]{quadgk}, Symbolics.jl\\cite[Symbolics]{gowda2021high}, "*
             "RecursiveArrayTools.jl\\cite[RecursiveArrayTools]{DifferentialEquations.jl-2017}, "*
             "ArrayInterface.jl\\cite[ArrayInterface]{DifferentialEquations.jl-2017} and "*
-            "AbstractAlgebra.jl\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}.\n"
+            "AbstractAlgebra.jl\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}."
 
         str = make_sentence(citations, cite_commands=Dict{String,String}(), jl=false)
         @test str == "This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
@@ -64,7 +64,7 @@ import Pkg
             "QuadGK\\cite[QuadGK]{quadgk}, Symbolics\\cite[Symbolics]{gowda2021high}, "*
             "RecursiveArrayTools\\cite[RecursiveArrayTools]{DifferentialEquations.jl-2017}, "*
             "ArrayInterface\\cite[ArrayInterface]{DifferentialEquations.jl-2017} and "*
-            "AbstractAlgebra\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}.\n"
+            "AbstractAlgebra\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}."
 
         @testset "Clipboard" begin
             io = IOBuffer()
