@@ -51,7 +51,6 @@ function export_citations(filename, pkg_citations)
         @warn "Overwriting $filename"
     end
     if isempty(citations)
-        @warn "No citations found in current environment"
         return nothing
     end
     export_bibtex(filename, citations)
@@ -71,7 +70,11 @@ file.
 function get_citations(;filename="julia_citations.bib")
     pkg_citations = collect_citations()
 
-    export_citations(filename, pkg_citations)
+    if isempty(pkg_citations)
+        @warn "No citations found in current environment"
+    else
+        export_citations(filename, pkg_citations)
+    end
 
     return nothing
 end
