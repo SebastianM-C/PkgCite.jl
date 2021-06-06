@@ -61,6 +61,16 @@ function make_sentence(pkg_citations; cite_commands, jl=true, texttt=false)
     return start * middle * ending
 end
 
+"""
+    get_tool_citation(io::IO=stdout; jl = true, texttt = false, copy = true, cite_commands=Dict{String,String}(), filename="julia_citations.bib")
+
+Print a sentence describing the packages used in the current environment.
+The sentence is automatically copied to the clipboard(you can avoid this by using `copy=false`).
+The package names have the .jl ending by default. You can ommit it with `jl=false`.
+Package names can be wrapped in `texttt` by setting `texttt=true` and you can also customize
+the cite command used for each package by using `cite_commands=Dict("PackageName"=>"custom_cite")`.
+The filename of the .bib file can be passed via the `filename` keyword.
+"""
 function get_tool_citation(io::IO=stdout;
     jl = true,
     texttt = false,
