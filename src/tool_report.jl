@@ -41,6 +41,7 @@ end
 
 function get_tool_citation(;
     jl = true,
+    texttt = false,
     cite_commands=Dict{String,String}(),
     filename="julia_citations.bib")
 
@@ -53,6 +54,7 @@ function get_tool_citation(;
     citations = String[]
     for pkg in pkgs
         pkg_name = jl ? pkg * ".jl" : pkg
+        pkg_name = texttt ? add_texttt(pkg_name) : pkg_name
         c = pkg_name * cite_package(pkg, pkg_citations[pkg]; cite_commands)
         push!(citations, c)
     end
@@ -60,10 +62,15 @@ function get_tool_citation(;
     ending = sentence_ending(n)
 
     cite_sentence = start * join(citations, ", ", " and ") * ending
-    @info "The following sentence was copied to your clipboard:"
     println(cite_sentence)
-    clipboard(cite_sentence)
+    try
+        clipboard(cite_sentence)
+        @info "The following sentence was copied to your clipboard:"
+    catch
+        @error e
+    end
 
     julia_bib = get_julia_bib()
-    export_citations(filename, merge!(julia_bib, pkg_citations))
+    all_citations = merge!(Dict("Julia"=>julia_bib), pkg_citations)
+    export_citations(filename, all_citations)
 end
