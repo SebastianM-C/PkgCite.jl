@@ -66,7 +66,7 @@ function get_tool_citation(io::IO=stdout;
         clipboard(cite_sentence)
         @info "The following sentence was copied to your clipboard:"
         println(io, cite_sentence)
-    catch
+    catch e
         @error e
     end
 
