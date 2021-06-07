@@ -83,12 +83,12 @@ function get_tool_citation(io::IO=stdout;
     pkg_citations = collect_citations(only_direct)
 
     cite_sentence = make_sentence(pkg_citations; cite_commands, jl, texttt)
+    println(io, cite_sentence)
 
     try
         if copy
             clipboard(cite_sentence)
-            @info "The following sentence was copied to your clipboard:"
-            println(io, cite_sentence)
+            @info "The above sentence was copied to your clipboard."
         end
     catch e
         @error e

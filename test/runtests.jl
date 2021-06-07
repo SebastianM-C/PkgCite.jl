@@ -1,5 +1,6 @@
 using Cite
 using Cite: collect_citations, bibliography, cited_packages, make_sentence
+using InteractiveUtils
 using Bibliography
 using Test
 import Pkg
@@ -76,14 +77,16 @@ include("cite_str.jl")
             seekstart(io)
             str = read(io, String)
 
-            @test_broken str == CITE_STR_JL*'\n'
+            @test str == CITE_STR_JL*'\n'
+            @test_broken clipboard() == CITE_STR_JL
 
             io = IOBuffer()
             get_tool_citation(io, jl=false)
             seekstart(io)
             str = read(io, String)
 
-            @test_broken str == CITE_STR * '\n'
+            @test str == CITE_STR * '\n'
+            @test_broken clipboard() == CITE_STR
         end
     end
 end
