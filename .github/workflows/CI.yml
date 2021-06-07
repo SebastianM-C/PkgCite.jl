@@ -1,6 +1,5 @@
 name: CI
 on:
-  - push
   - pull_request
 jobs:
   test:
@@ -17,6 +16,10 @@ jobs:
         arch:
           - x64
     steps:
+      - name: Install xclip
+        run: sudo apt install -y xorg xclip
+        env:
+          DISPLAY: :0
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:

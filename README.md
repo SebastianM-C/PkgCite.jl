@@ -20,7 +20,9 @@ using Cite
 
 # Be sure to be in the appropriate environment
 
-get_citations()
+get_tool_citation()
 ```
-This will create a `julia_citations.bib` file with all the citations collected form
+which will print a sentence with the citations for all the packages used in the current
+environment and will automatically copy it to the clipboard.
+It will also create a `julia_citations.bib` file with all the citations collected form
 the CITATION.bib files corresponding to the dependecies of the current active environment.
