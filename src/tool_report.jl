@@ -41,7 +41,7 @@ function sentence_ending(n)
     end
 end
 
-function make_sentence(pkg_citations; cite_commands, jl=true, texttt=false)
+function make_sentence(pkg_citations; cite_commands=Dict{String,String}(), jl=true, texttt=false)
     pkgs = keys(pkg_citations)
     n = length(pkgs)
 

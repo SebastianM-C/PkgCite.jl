@@ -59,10 +59,10 @@ include("cite_str.jl")
 
     @testset "Cite sentence" begin
         citations = collect_citations(false)
-        str = make_sentence(citations, cite_commands=Dict{String,String}())
+        str = make_sentence(citations)
         @test str == CITE_STR_JL
 
-        str = make_sentence(citations, cite_commands=Dict{String,String}(), jl=false)
+        str = make_sentence(citations, jl=false)
         @test str == CITE_STR
 
         str = make_sentence(citations, cite_commands=Dict{String,String}("AbstractAlgebra"=>"\\autocite"))
