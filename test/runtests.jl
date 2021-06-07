@@ -65,7 +65,7 @@ include("cite_str.jl")
         str = make_sentence(citations, cite_commands=Dict{String,String}(), jl=false)
         @test str == CITE_STR
 
-        str = make_sentence(citations, cite_commands=Dict{String,String}("AbstractAlgebra"=>"\\autocite"), jl=false)
+        str = make_sentence(citations, cite_commands=Dict{String,String}("AbstractAlgebra"=>"\\autocite"))
         @test str == CITE_STR_JL_AUTO
 
         @testset "Clipboard" begin
