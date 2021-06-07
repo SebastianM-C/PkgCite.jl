@@ -16,6 +16,14 @@ const CITE_STR_JL_AUTO =
 "ArrayInterface.jl\\cite[ArrayInterface]{DifferentialEquations.jl-2017} and "*
 "AbstractAlgebra.jl\\autocite[AbstractAlgebra]{AbstractAlgebra.jl-2017}."
 
+const CITE_STR_JL_SINGLE =
+"This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
+"and made use of the Symbolics.jl\\cite[Symbolics]{gowda2021high} package."
+
+const CITE_STR_JL_SINGLE_TT =
+"This work was done in \\cite[\\texttt{Julia v$VERSION}]{Julia-2017} "*
+"and made use of the \\texttt{Symbolics.jl}\\cite[Symbolics]{gowda2021high} package."
+
 
 const CITE_STR =
 "This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*

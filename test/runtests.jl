@@ -55,6 +55,8 @@ include("cite_str.jl")
         citations = collect_citations(true)
         pkgs = cited_packages(citations)
         @test only(pkgs) == "Symbolics"
+        @test make_sentence(citations) == CITE_STR_JL_SINGLE
+        @test make_sentence(citations) == CITE_STR_JL_SINGLE_TT
     end
 
     @testset "Cite sentence" begin
