@@ -21,7 +21,7 @@ const CITE_STR_JL_SINGLE =
 "and made use of the Symbolics.jl\\cite[Symbolics]{gowda2021high} package."
 
 const CITE_STR_JL_SINGLE_TT =
-"This work was done in \\cite[\\texttt{Julia v$VERSION}]{Julia-2017} "*
+"This work was done in \\cite[Julia v$VERSION}{Julia-2017} "*
 "and made use of the \\texttt{Symbolics.jl}\\cite[Symbolics]{gowda2021high} package."
 
 
