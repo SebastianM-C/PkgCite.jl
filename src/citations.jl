@@ -12,7 +12,7 @@ function get_citation(pkg)
         try
             import_bibtex(bib_path)
         catch e
-            @warn("There was an error reading the CITATION.bib file for $(pkg.name)" exception=e)
+            @warn "There was an error reading the CITATION.bib file for $(pkg.name)" exception=e
         end
     end
 end
