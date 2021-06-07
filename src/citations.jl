@@ -28,15 +28,12 @@ function collect_citations(only_direct::Bool)
     deps = Pkg.dependencies()
     pkg_citations = Dict{String, DataStructures.OrderedDict{String,Entry}}()
     for pkg in values(deps)
+        if only_direct && !pkg.is_direct_dep
+            continue
+        end
         c = get_citation(pkg)
         if !isnothing(c)
-            if only_direct
-                if pkg.is_direct_dep
-                    push!(pkg_citations, pkg.name=>c)
-                end
-            else
-                push!(pkg_citations, pkg.name=>c)
-            end
+            push!(pkg_citations, pkg.name=>c)
         end
     end
 
