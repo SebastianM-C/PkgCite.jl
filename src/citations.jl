@@ -66,12 +66,12 @@ function export_citations(filename, pkg_citations)
 end
 
 """
-    get_citations(; filename="julia_citations.bib")
+    get_citations(; only_direct=false, filename="julia_citations.bib")
 
 This function will create a .bib file with all the citations collected form
 the CITATION.bib files corresponding to the dependecies of
 the current active environment. Use `filename` to change the name of the
-file.
+file. To include just the direct dependencies use `only_direct=true`
 """
 function get_citations(;only_direct=false, filename="julia_citations.bib")
     pkg_citations = collect_citations(only_direct)
