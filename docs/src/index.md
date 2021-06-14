@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = Cite
+CurrentModule = PkgCite
 ```
 
-# Cite
+# PkgCite
 
-Documentation for [Cite](https://github.com/SebastianM-C/Cite.jl).
+Documentation for [PkgCite](https://github.com/SebastianM-C/PkgCite.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [Cite]
+Modules = [PkgCite]
 ```

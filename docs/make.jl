@@ -1,16 +1,16 @@
-using Cite
+using PkgCite
 using Documenter
 
-DocMeta.setdocmeta!(Cite, :DocTestSetup, :(using Cite); recursive=true)
+DocMeta.setdocmeta!(PkgCite, :DocTestSetup, :(using PkgCite); recursive=true)
 
 makedocs(;
-    modules=[Cite],
+    modules=[PkgCite],
     authors="Sebastian Micluța-Câmpeanu <m.c.sebastian95@gmail.com>",
-    repo="https://github.com/SebastianM-C/Cite.jl/blob/{commit}{path}#{line}",
-    sitename="Cite.jl",
+    repo="https://github.com/SebastianM-C/PkgCite.jl/blob/{commit}{path}#{line}",
+    sitename="PkgCite.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://SebastianM-C.github.io/Cite.jl",
+        canonical="https://SebastianM-C.github.io/PkgCite.jl",
         assets=String[],
     ),
     pages=[
@@ -19,5 +19,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/SebastianM-C/Cite.jl",
+    repo="github.com/SebastianM-C/PkgCite.jl",
 )

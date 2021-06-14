@@ -9,7 +9,7 @@ uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
-[[Cite]]
+[[PkgCite]]
 path = ".."
 uuid = "50d0efc5-baaf-4329-a409-faca2d9bd902"
 version = "0.1.0"

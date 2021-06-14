@@ -1,5 +1,5 @@
-using Cite
-using Cite: collect_citations, bibliography, cited_packages, make_sentence
+using PkgCite
+using PkgCite: collect_citations, bibliography, cited_packages, make_sentence
 using InteractiveUtils
 using Bibliography
 using Test
@@ -7,7 +7,7 @@ import Pkg
 
 include("cite_str.jl")
 
-@testset "Cite.jl" begin
+@testset "PkgCite.jl" begin
     @testset "Empty env" begin
         @test_logs (:warn, "No citations found in current environment") get_citations()
     end
@@ -60,7 +60,7 @@ include("cite_str.jl")
         @test make_sentence(citations, texttt=true) == CITE_STR_JL_SINGLE_TT
     end
 
-    @testset "Cite sentence" begin
+    @testset "PkgCite sentence" begin
         citations = collect_citations(false)
         str = make_sentence(citations)
         @test str == CITE_STR_JL

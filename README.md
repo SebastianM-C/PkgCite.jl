@@ -1,22 +1,22 @@
-# Cite
+# PkgCite
 
-[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://SebastianM-C.github.io/Cite.jl/stable)
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://SebastianM-C.github.io/Cite.jl/dev)
-[![Build Status](https://github.com/SebastianM-C/Cite.jl/workflows/CI/badge.svg)](https://github.com/SebastianM-C/Cite.jl/actions)
-[![Coverage](https://codecov.io/gh/SebastianM-C/Cite.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SebastianM-C/Cite.jl)
+[![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://SebastianM-C.github.io/PkgCite.jl/stable)
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://SebastianM-C.github.io/PkgCite.jl/dev)
+[![Build Status](https://github.com/SebastianM-C/PkgCite.jl/workflows/CI/badge.svg)](https://github.com/SebastianM-C/PkgCite.jl/actions)
+[![Coverage](https://codecov.io/gh/SebastianM-C/PkgCite.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SebastianM-C/PkgCite.jl)
 
 ## Installation
 
 Right now this package is not yet registered. If you want to try it, use
 ```
-]add https://github.com/SebastianM-C/Cite.jl
+]add https://github.com/SebastianM-C/PkgCite.jl
 ```
 
 ## Usage
 
 To get all the dependencies in the current environment, use
 ```julia
-using Cite
+using PkgCite
 
 # Be sure to be in the appropriate environment
 

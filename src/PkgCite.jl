@@ -1,4 +1,4 @@
-module Cite
+module PkgCite
 
 using Pkg: include
 using DataStructures: getkey, values

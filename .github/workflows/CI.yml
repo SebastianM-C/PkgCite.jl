@@ -61,9 +61,9 @@ jobs:
       - run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
-            using Cite
-            DocMeta.setdocmeta!(Cite, :DocTestSetup, :(using Cite); recursive=true)
-            doctest(Cite)'
+            using PkgCite
+            DocMeta.setdocmeta!(PkgCite, :DocTestSetup, :(using PkgCite); recursive=true)
+            doctest(PkgCite)'
       - run: julia --project=docs docs/make.jl
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
