@@ -9,7 +9,7 @@
 
 To install this package open [the REPL](https://docs.julialang.org/en/v1/manual/getting-started/) and enter the package manager mode by pressing the <kbd>]</kbd> key and then use the following
 ```julia
-pgk> add PkgCite
+pkg> add PkgCite
 ```
 
 ## Usage
