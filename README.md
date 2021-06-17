@@ -7,9 +7,9 @@
 
 ## Installation
 
-Right now this package is not yet registered. If you want to try it, use
-```
-]add https://github.com/SebastianM-C/PkgCite.jl
+To install this package open [the REPL](https://docs.julialang.org/en/v1/manual/getting-started/) and enter the package manager mode by pressing the <kbd>]</kbd> key and then use the following
+```julia
+pgk> add PkgCite
 ```
 
 ## Usage
