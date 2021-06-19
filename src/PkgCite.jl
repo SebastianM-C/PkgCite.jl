@@ -2,7 +2,7 @@ module PkgCite
 
 using Pkg: include
 using DataStructures: getkey, values
-using Base: String
+using Base: String, indent_width
 export get_citations, get_tool_citation
 
 import Pkg

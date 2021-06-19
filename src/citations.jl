@@ -7,6 +7,7 @@ end
 
 function get_citation(pkg)
     bib_path = citation_path(pkg)
+    urlzenodo = get_zenodo_badge(pkg)
     if !isnothing(bib_path)
         @debug "Reading CITATION.bib for $(pkg.name)"
         try
@@ -14,6 +15,8 @@ function get_citation(pkg)
         catch e
             @warn "There was an error reading the CITATION.bib file for $(pkg.name)" exception=e
         end
+    elseif !isnothing(urlzenodo)
+        get_citation_zenodo(urlzenodo)
     end
 end
 
@@ -105,9 +108,16 @@ present in the package's `README.md`.
 """
 function get_zenodo_badge(pkg)
     readme_path = joinpath(pkg.source, "README.md")
-    readme = open(f->read(f, String), readme_path);
-    index_init  = findlast("https://zenodo.org/badge", readme)[1]
-    index_final = findfirst(')',readme[index_init:end]) - 2
-    urlbadge = readme[index_init: index_init + index_final]
-    return urlbadge
+    if isfile(readme_path)
+        readme = open(f->read(f, String), readme_path);
+        index_init = findlast("https://zenodo.org/badge", readme)
+        if isnothing(index_init)
+            urlbadge = nothing
+        else
+            index_init  = index_init[1]
+            index_final = findfirst(')',readme[index_init:end]) - 2
+            urlbadge = readme[index_init: index_init + index_final]
+        end
+        return urlbadge
+    end
 end
