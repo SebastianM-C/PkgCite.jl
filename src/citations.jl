@@ -80,3 +80,34 @@ function get_citations(;only_direct=false, filename="julia_citations.bib")
 
     return nothing
 end
+
+"""
+    get_citation_zenodo(url::String)
+
+This function will return an `OrderedDict` in the default to BibTeX format
+from `Bibliography.jl`. The `url` argument is the link present in the
+Zenodo badge.
+"""
+function get_citation_zenodo(url::String)
+    header = HTTP.head(url, redirect=false).headers
+    doi = last(header[findfirst(i -> isequal("Location", first(i)), header)])[17:end]
+    url = joinpath("https://data.datacite.org/", doi)
+    resp = HTTP.get(url, ["Accept"=>"application/x-bibtex"]; forwardheaders=true).body |> String
+    bib = parse_entry(resp)
+    return bib
+end
+
+"""
+    get_zenodo_badge(pkg)
+
+This function extracts the link in the Zenodo badge
+present in the package's `README.md`.
+"""
+function get_zenodo_badge(pkg)
+    readme_path = joinpath(pkg.source, "README.md")
+    readme = open(f->read(f, String), readme_path);
+    index_init  = findlast("https://zenodo.org/badge", readme)[1]
+    index_final = findfirst(')',readme[index_init:end]) - 2
+    urlbadge = readme[index_init: index_init + index_final]
+    return urlbadge
+end

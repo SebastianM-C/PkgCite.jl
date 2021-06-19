@@ -9,6 +9,8 @@ import Pkg
 using Bibliography: import_bibtex, export_bibtex, Entry
 using DataStructures
 using InteractiveUtils
+using BibParser: parse_entry
+using HTTP
 
 const DEFAULT_CITE = "\\cite"
 
