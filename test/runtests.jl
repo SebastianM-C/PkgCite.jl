@@ -89,4 +89,15 @@ include("cite_str.jl")
             @test_broken clipboard() == CITE_STR
         end
     end
+    @testset "PkgCite Zenodo" begin
+        zenodo_env = "zenodo_env"
+        Pkg.activate(zenodo_env)
+        Pkg.instantiate()
+        Pkg.status()
+
+        citations = collect_citations(true, zenodo=true)
+        pkgs = cited_packages(citations)
+        @test only(pkgs) == "WriteVTK"
+        @test make_sentence(citations) == CITE_ZENODO
+    end
 end

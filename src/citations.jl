@@ -41,7 +41,7 @@ function collect_citations(only_direct::Bool; zenodo=false)
         if only_direct && !pkg.is_direct_dep
             continue
         end
-        c = get_citation(pkg, zenodo=false)
+        c = get_citation(pkg, zenodo=zenodo)
         if !isnothing(c)
             push!(pkg_citations, pkg.name=>c)
         end
