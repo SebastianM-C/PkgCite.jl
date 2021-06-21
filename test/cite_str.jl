@@ -33,3 +33,8 @@ const CITE_STR =
 "RecursiveArrayTools\\cite[RecursiveArrayTools]{DifferentialEquations.jl-2017}, "*
 "ArrayInterface\\cite[ArrayInterface]{DifferentialEquations.jl-2017} and "*
 "AbstractAlgebra\\cite[AbstractAlgebra]{AbstractAlgebra.jl-2017}."
+
+const CITE_BADGE =
+"This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
+"and made use of the Plots.jl\\cite[Plots]{https://doi.org/10.5281/zenodo.4725317} "*
+"and WriteVTK.jl\\cite[WriteVTK]{https://doi.org/10.5281/zenodo.4692172} packages."

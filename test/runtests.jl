@@ -89,4 +89,15 @@ include("cite_str.jl")
             @test_broken clipboard() == CITE_STR
         end
     end
+    @testset "PkgCite using badge" begin
+        zenodo_env = "badge_env"
+        Pkg.activate(zenodo_env)
+        Pkg.instantiate()
+        Pkg.status()
+
+        citations = collect_citations(true, badge=true)
+        pkgs = cited_packages(citations)
+        @test issubset(["WriteVTK", "Plots"], pkgs)
+        @test make_sentence(citations) == CITE_BADGE
+    end
 end
