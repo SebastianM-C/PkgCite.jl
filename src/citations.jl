@@ -120,7 +120,7 @@ present in the package's `README.md`.
 function get_zenodo_badge(pkg)
     readme_path = joinpath(pkg.source, "README.md")
     if isfile(readme_path)
-        readme = open(f->read(f, String), readme_path);
+        readme = open(f->read(f, String), readme_path)
         index_init = findlast("https://zenodo.org/badge", readme)
         if isnothing(index_init)
             urlbadge = nothing
