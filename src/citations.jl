@@ -129,7 +129,7 @@ function get_zenodo_badge(pkg)
             index_final = findfirst(')',readme[index_init:end]) - 2
             urlbadge = readme[index_init: index_init + index_final]
             if !isnothing(findfirst(".svg", urlbadge))
-                @warn "Link in Zenodo badge incorrectly setup. Link should be something like `https://zenodo.org/badge/latestdoi/32700186`."
+                @warn "Link in Zenodo badge incorrectly setup for $(pkg.name). Link should be something like `https://zenodo.org/badge/latestdoi/32700186`."
                 return nothing
             end
         end
