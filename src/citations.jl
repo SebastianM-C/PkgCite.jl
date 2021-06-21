@@ -102,9 +102,7 @@ from `Bibliography.jl`. The `url` argument is the link present in the
 Zenodo badge.
 """
 function get_citation_zenodo(url)
-    if url == nothing
-        return nothing
-    end
+    isnothing(url) && return url
     header = HTTP.head(url, redirect=false).headers
     doi = last(header[findfirst(i -> isequal("Location", first(i)), header)])[17:end]
     url = joinpath("https://data.datacite.org/", doi)
