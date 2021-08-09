@@ -1,4 +1,5 @@
 function cite_package(name, bib; cite_commands)
+    isempty(bib) && return ""
     if length(bib) == 1
         key = only(keys(bib))
         cmd = get(cite_commands, name, DEFAULT_CITE)
