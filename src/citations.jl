@@ -17,7 +17,12 @@ function get_citation(pkg; badge=false)
     if !isnothing(bib_path)
         @debug "Reading CITATION.bib for $(pkg.name)"
         try
-            import_bibtex(bib_path)
+            bib = import_bibtex(bib_path)
+            if isempty(bib)
+                @warn "The CITATION.bib file for $(pkg.name) is empty."
+            end
+
+            bib
         catch e
             @warn "There was an error reading the CITATION.bib file for $(pkg.name)" exception=e
         end
