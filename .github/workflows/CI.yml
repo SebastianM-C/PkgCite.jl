@@ -19,11 +19,12 @@ jobs:
           - ubuntu-latest
         arch:
           - x64
+        include:
+          - os: ubuntu-latest
+            prefix: xvfb-run
     steps:
       - name: Install xclip
-        run: sudo apt install -y xorg xclip
-        env:
-          DISPLAY: :0
+        run: sudo apt-get install xclip
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:
