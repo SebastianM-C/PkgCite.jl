@@ -24,7 +24,6 @@ const CITE_STR_JL_SINGLE_TT =
 "This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
 "and made use of the \\texttt{Symbolics.jl}\\cite[Symbolics]{gowda2021high} package."
 
-
 const CITE_STR =
 "This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
 "and made use of the following packages: "*
@@ -37,4 +36,4 @@ const CITE_STR =
 const CITE_BADGE =
 "This work was done in \\cite[Julia v$VERSION]{Julia-2017} "*
 "and made use of the Plots.jl\\cite[Plots]{https://doi.org/10.5281/zenodo.4725317} "*
-"and WriteVTK.jl\\cite[WriteVTK]{https://doi.org/10.5281/zenodo.4692172} packages."
+"and WriteVTK.jl\\cite[WriteVTK]{https://doi.org/10.5281/zenodo.5068937} packages."
