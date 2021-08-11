@@ -26,7 +26,6 @@ include("cite_str.jl")
         @test "Symbolics" ∈ pkgs
         @test "RecursiveArrayTools" ∈ pkgs
         @test "ArrayInterface" ∈ pkgs
-        @test "AbstractAlgebra" ∈ pkgs
         # There is an error in the CITATION.bib for Distributions
         @test_broken haskey(citations, "Distributions")
     end
@@ -35,7 +34,6 @@ include("cite_str.jl")
         bib = bibliography(citations)
         @test haskey(bib, "DifferentialEquations.jl-2017")
         @test haskey(bib, "quadgk")
-        @test haskey(bib, "AbstractAlgebra.jl-2017")
         @test haskey(bib, "gowda2021high")
     end
 
@@ -48,7 +46,6 @@ include("cite_str.jl")
 
         @test haskey(bib, "DifferentialEquations.jl-2017")
         @test haskey(bib, "quadgk")
-        @test haskey(bib, "AbstractAlgebra.jl-2017")
         @test haskey(bib, "gowda2021high")
     end
 
@@ -68,7 +65,7 @@ include("cite_str.jl")
         str = make_sentence(citations, jl=false)
         @test str == CITE_STR
 
-        str = make_sentence(citations, cite_commands=Dict{String,String}("AbstractAlgebra"=>"\\autocite"))
+        str = make_sentence(citations, cite_commands=Dict{String,String}("Symbolics"=>"\\autocite"))
         @test str == CITE_STR_JL_AUTO
 
         @testset "Clipboard" begin
@@ -89,6 +86,7 @@ include("cite_str.jl")
             @test_broken clipboard() == CITE_STR
         end
     end
+
     @testset "PkgCite using badge" begin
         zenodo_env = "badge_env"
         Pkg.activate(zenodo_env)
