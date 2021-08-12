@@ -52,7 +52,7 @@ function collect_citations(only_direct::Bool; badge=false)
         end
     end
 
-    return sort(pkg_citations)
+    return sort!(DataStructures.OrderedDict(pkg_citations))
 end
 
 function bibliography(pkg_citations)
