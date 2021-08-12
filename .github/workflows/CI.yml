@@ -13,17 +13,18 @@ jobs:
       fail-fast: false
       matrix:
         version:
-          - '1.6'
+          - '1'
           - 'nightly'
         os:
           - ubuntu-latest
         arch:
           - x64
+        include:
+          - os: ubuntu-latest
+            prefix: xvfb-run
     steps:
       - name: Install xclip
-        run: sudo apt install -y xorg xclip
-        env:
-          DISPLAY: :0
+        run: sudo apt-get install xclip
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:
@@ -41,6 +42,8 @@ jobs:
             ${{ runner.os }}-
       - uses: julia-actions/julia-buildpkg@v1
       - uses: julia-actions/julia-runtest@v1
+        with:
+            prefix: ${{ matrix.prefix }}
       - uses: julia-actions/julia-processcoverage@v1
       - uses: codecov/codecov-action@v1
         with:
