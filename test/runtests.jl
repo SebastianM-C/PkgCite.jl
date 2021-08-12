@@ -76,15 +76,14 @@ include("cite_str.jl")
             get_tool_citation(io)
             str = String(take!(io))
 
-            @test str == CITE_STR_JL*'\n'
-            @test_broken clipboard() == CITE_STR_JL
+            @test str == CITE_STR_JL * '\n'
+            @test clipboard() == CITE_STR_JL
 
-            io = IOBuffer()
             get_tool_citation(io, jl=false)
             str = String(take!(io))
 
             @test str == CITE_STR * '\n'
-            @test_broken clipboard() == CITE_STR
+            @test clipboard() == CITE_STR
         end
     end
     @testset "PkgCite using badge" begin
