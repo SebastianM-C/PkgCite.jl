@@ -12,8 +12,8 @@ InteractiveUtils = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 
 [compat]
-Bibliography = "0.2"
 BibParser = "0.1"
+Bibliography = "0.2"
 DataStructures = "0.18"
 HTTP = "0.9"
 julia = "1.6"
