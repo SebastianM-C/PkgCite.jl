@@ -68,22 +68,20 @@ include("cite_str.jl")
         str = make_sentence(citations, jl=false)
         @test str == CITE_STR
 
-        str = make_sentence(citations, cite_commands=Dict{String,String}("AbstractAlgebra"=>"\\autocite"))
+        str = make_sentence(citations, cite_commands=Dict{String,String}("AbstractAlgebra" => "\\autocite"))
         @test str == CITE_STR_JL_AUTO
 
         @testset "Clipboard" begin
             io = IOBuffer()
             get_tool_citation(io)
-            seekstart(io)
-            str = read(io, String)
+            str = String(take!(io))
 
             @test str == CITE_STR_JL*'\n'
             @test_broken clipboard() == CITE_STR_JL
 
             io = IOBuffer()
             get_tool_citation(io, jl=false)
-            seekstart(io)
-            str = read(io, String)
+            str = String(take!(io))
 
             @test str == CITE_STR * '\n'
             @test_broken clipboard() == CITE_STR
