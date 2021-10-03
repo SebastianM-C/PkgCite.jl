@@ -4,12 +4,12 @@ CurrentModule = PkgCite
 
 # PkgCite
 
-The [PkgCite](https://github.com/SebastianM-C/PkgCite.jl) julia package is useful for retrieving citation
-information for julia packages. By convention, julia packages that have a paper (or some other citable
+The [PkgCite](https://github.com/SebastianM-C/PkgCite.jl) Julia package is useful for retrieving citation
+information for Julia packages. By convention, Julia packages that have a paper (or some other citable
 work associated) contain a CITATION.bib file in the root of the package directory. This package helps
-user collect a .bib file corresponding to all the pacakges and their dependencies in [the current active
+users collect a .bib file corresponding to all the pacakges and their dependencies in [the current active
 environment](https://pkgdocs.julialang.org/v1/environments/) and it also provides
-and automatically generated sentence that references julia and the used packages.
+an automatically generated sentence that references Julia and the used packages.
 
 
 ## Usage
@@ -29,14 +29,14 @@ get_citations
 ```
 
 !!! tip
-    When working on a new project / paper it is useful to [create a julia project](https://pkgdocs.julialang.org/v1/environments/#Creating-your-own-projects)
+    When working on a new project / paper it is useful to [create a Julia project](https://pkgdocs.julialang.org/v1/environments/#Creating-your-own-projects)
     to isolate the packages you use from other projects or the default environment. This will also [help others reproduce
-    your results](https://pkgdocs.julialang.org/v1/environments/#Using-someone-else's-project) easier,
-    since it they have your Project.toml and Manifest.toml files, with `]instantiate` they will
-    get the exact same package versions as you do, elliminating thus problems with incompatible package versions.
+    your results](https://pkgdocs.julialang.org/v1/environments/#Using-someone-else's-project) more easily,
+    since if they have your Project.toml and Manifest.toml files, with `]instantiate` they will
+    get the exact same package versions as you do, eliminating thus problems with incompatible package versions.
     See also the [DrWatson](https://github.com/JuliaDynamics/DrWatson.jl) package, which can help you manage scientific projects.
 
-If you also need to get the automatically generated sentence referencig julia, you will have to use [`get_tool_citation`](@ref).
+If you also need to get the automatically generated sentence referencig Julia, you will have to use [`get_tool_citation`](@ref).
 ```@docs
 get_tool_citation
 ```
