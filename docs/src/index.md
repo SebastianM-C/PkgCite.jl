@@ -40,3 +40,6 @@ If you also need to get the automatically generated sentence referencig Julia, y
 ```@docs
 get_tool_citation
 ```
+
+!!! tip
+    By default, the `julia_citations.bib` file is saved in the current directory. To change the name or the save location of the generated `.bib`, you can just pass a path in the `filename` keyword argument, such as `get_tool_citation(filename="path/to/bib_file.bib")`.
