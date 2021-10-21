@@ -24,8 +24,9 @@ get_tool_citation()
 ```
 which will print a sentence with the citations for all the packages used in the current
 environment and will automatically copy it to the clipboard.
-It will also create a `julia_citations.bib` file with all the citations collected form
-the CITATION.bib files corresponding to the dependecies of the current active environment.
+It will also create a `julia_citations.bib` file in the current working directory
+with all the citations collected form the CITATION.bib files
+corresponding to the dependecies of the current active environment.
 
 If you only need the .bib file with all the citations, use
 ```julia
