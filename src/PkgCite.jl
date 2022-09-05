@@ -1,6 +1,5 @@
 module PkgCite
 
-using Pkg: include
 using DataStructures: getkey, values
 using Base: String
 export get_citations, get_tool_citation
