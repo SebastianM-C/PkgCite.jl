@@ -7,11 +7,13 @@ export get_citations, get_tool_citation
 import Pkg
 import TOML
 using Bibliography: import_bibtex, export_bibtex, Entry
+using Bibliography: BibInternal
 using DataStructures
 using InteractiveUtils
 using BibParser: parse_entry
+using Dates
 using HTTP
-using Dates: year, today
+using YAML
 
 const DEFAULT_CITE = "\\cite"
 
