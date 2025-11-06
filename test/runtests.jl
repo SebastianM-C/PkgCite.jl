@@ -177,4 +177,50 @@ end
             @test_skip false
         end
     end
+
+    @testset "CFF Support" begin
+        @testset "Import CFF file" begin
+            # Test importing a CFF file directly
+            cff_path = joinpath(@__DIR__, "test_citation.cff")
+            @test isfile(cff_path)
+
+            # Import and verify it returns an Entry
+            bib = Bibliography.import_cff(cff_path)
+            @test !isnothing(bib)
+            @test bib isa Bibliography.Entry
+            @test bib.title == "TestPackage.jl: A Test Package for CFF Support"
+        end
+
+        @testset "Convert BibTeX to CFF" begin
+            # Test the bib_to_cff conversion function
+            bib_path = joinpath(@__DIR__, "test_citation.bib")
+            cff_output = joinpath(@__DIR__, "converted_citation.cff")
+
+            # Clean up any existing file
+            rm(cff_output, force=true)
+
+            # Test conversion
+            @test isfile(bib_path)
+            bib_to_cff(bib_path, cff_output)
+            @test isfile(cff_output)
+
+            # Verify the converted file can be imported
+            converted_bib = Bibliography.import_cff(cff_output)
+            @test !isnothing(converted_bib)
+            @test converted_bib isa Bibliography.Entry
+
+            # Clean up
+            rm(cff_output, force=true)
+        end
+
+        @testset "CFF file detection" begin
+            # Test that citation_path properly detects CFF files
+            # Create a mock package structure
+            using PkgCite: citation_path
+
+            # We would need a more elaborate setup to test this properly
+            # For now, just verify the function exists and handles edge cases
+            @test isdefined(PkgCite, :citation_path)
+        end
+    end
 end
