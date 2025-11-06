@@ -6,3 +6,4 @@
 # Test-generated files
 test/**/Manifest.toml
 test/julia_citations.bib
+test/converted_citation.cff
