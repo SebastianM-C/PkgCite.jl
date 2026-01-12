@@ -115,7 +115,20 @@ function get_citation_badge(urlbadge)
     else
         # If link is for `lastestdoi` in Zenodo
         header = HTTP.head(urlbadge, redirect=false).headers
-        doi = last(header[findfirst(i -> isequal("Location", first(i)), header)])[17:end]
+        # Use case-insensitive comparison for HTTP headers
+        location_idx = findfirst(i -> lowercase(first(i)) == "location", header)
+        if isnothing(location_idx)
+            @warn "Could not find Location header for badge URL: $urlbadge"
+            return nothing
+        end
+        location_value = last(header[location_idx])
+        # Extract DOI from Location header (skip "https://doi.org/" prefix)
+        doi_prefix_idx = findfirst("https://doi.org/", location_value)
+        if isnothing(doi_prefix_idx)
+            @warn "Location header does not contain DOI: $location_value"
+            return nothing
+        end
+        doi = location_value[doi_prefix_idx[end]+1:end]
     end
     url = joinpath("https://data.datacite.org/", doi)
     resp = HTTP.get(url, ["Accept"=>"application/x-bibtex"]; forwardheaders=true).body |> String

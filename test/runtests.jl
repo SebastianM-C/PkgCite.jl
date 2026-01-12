@@ -5,11 +5,27 @@ using Bibliography
 using Test
 import Pkg
 
-# Helper function to check if clipboard is available
-function clipboard_available()
+# Helper function to check if clipboard read/write is fully functional
+# Returns the clipboard state before testing (to restore), or nothing if not functional
+function test_clipboard_and_get_original()
     try
-        clipboard("")
-        return true
+        # Save original clipboard content
+        original = try clipboard() catch; "" end
+
+        test_str = "PkgCite_clipboard_test_$(rand())"
+        clipboard(test_str)
+        # Small delay to allow clipboard to sync
+        sleep(0.1)
+        result = clipboard()
+
+        if result == test_str
+            # Restore original content
+            clipboard(original)
+            sleep(0.1)
+            return true
+        else
+            return false
+        end
     catch
         return false
     end
@@ -115,16 +131,25 @@ end
             @test occursin("Julia v$VERSION", str)
             @test occursin("Symbolics", str)
 
-            # Only test clipboard if available
-            if clipboard_available()
-                @test clipboard() == strip(str)
+            # Only test clipboard if read/write roundtrip works
+            if test_clipboard_and_get_original()
+                # Small delay after the test function restored clipboard
+                sleep(0.1)
+
+                # Re-run get_tool_citation to populate clipboard with expected content
+                take!(io)  # Clear the buffer
+                get_tool_citation(io)
+                str_fresh = String(take!(io))
+                sleep(0.1)
+                @test clipboard() == strip(str_fresh)
 
                 # Test without .jl suffix
                 get_tool_citation(io, jl=false)
                 str_no_jl = String(take!(io))
+                sleep(0.1)
                 @test clipboard() == strip(str_no_jl)
             else
-                @info "Skipping clipboard tests (clipboard not available)"
+                @info "Skipping clipboard tests (clipboard read/write not functional)"
             end
         end
     end
