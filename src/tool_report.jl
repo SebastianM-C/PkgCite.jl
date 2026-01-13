@@ -7,16 +7,8 @@ function cite_package(name, bib; cite_commands)
         cmd * "[" * name * "]" * "{" * key * "}"
     else
         ks = keys(bib)
-        # determine common cite command
-        cmd = get(cite_commands, first(ks), DEFAULT_CITE)
-        for key in ks
-            cmdᵢ = get(cite_commands, name, DEFAULT_CITE)
-            # all the keys must have the same command
-            if cmdᵢ ≠ cmd
-                # fall back to DEFAULT_CITE
-                cmd = DEFAULT_CITE
-            end
-        end
+        # determine common cite command (use package name, not citation key)
+        cmd = get(cite_commands, name, DEFAULT_CITE)
 
         cmd * "[" * name * "]" * "{" * join(ks, ',') * "}"
     end
