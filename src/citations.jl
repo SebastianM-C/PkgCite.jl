@@ -7,7 +7,8 @@ end
 
 
 # Added `badge` flag to avoid breaking current tests
-function get_citation(pkg; badge=false)
+# Added `fallback` flag to generate citations from Project.toml metadata
+function get_citation(pkg; badge=false, fallback=false)
     bib_path = citation_path(pkg)
     if badge == false
         urlbadge = nothing
@@ -28,17 +29,23 @@ function get_citation(pkg; badge=false)
         end
     elseif !isnothing(urlbadge)
         get_citation_badge(urlbadge)
+    elseif fallback
+        @debug "Generating fallback citation from Project.toml for $(pkg.name)"
+        generate_fallback_citation(pkg)
     end
 end
 
 """
-    collect_citations(only_direct::Bool; badge=false)
+    collect_citations(only_direct::Bool; badge=false, fallback=false)
 
 Collect the citations from all the dependencies in the current environment.
 Use `badge = true` to get the citations from packages without
-a `Citation.bib` file, but with a DOI badge.
+a `CITATION.bib` file, but with a DOI badge.
+Use `fallback = true` to generate citations from `Project.toml` metadata
+for packages without a `CITATION.bib` file or DOI badge. This can be noisy
+in large environments, so it is disabled by default.
 """
-function collect_citations(only_direct::Bool; badge=false)
+function collect_citations(only_direct::Bool; badge=false, fallback=false)
     @debug "Generating citation report for the current environment"
     deps = Pkg.dependencies()
     pkg_citations = Dict{String, DataStructures.OrderedDict{String,Entry}}()
@@ -46,7 +53,7 @@ function collect_citations(only_direct::Bool; badge=false)
         if only_direct && !pkg.is_direct_dep
             continue
         end
-        c = get_citation(pkg, badge=badge)
+        c = get_citation(pkg, badge=badge, fallback=fallback)
         if !isnothing(c)
             push!(pkg_citations, pkg.name=>c)
         end
@@ -78,17 +85,20 @@ function export_citations(filename, pkg_citations)
 end
 
 """
-    get_citations(; only_direct=false, filename="julia_citations.bib")
+    get_citations(; only_direct=false, filename="julia_citations.bib", badge=false, fallback=false)
 
-This function will create a .bib file with all the citations collected form
-the CITATION.bib files corresponding to the dependecies of
+This function will create a .bib file with all the citations collected from
+the `CITATION.bib` files corresponding to the dependencies of
 the current active environment. Use `filename` to change the name of the
 file. To include just the direct dependencies use `only_direct=true`.
 Use `badge = true` to get the citations from packages without
-a `Citation.bib` file, but with a DOI badge.
+a `CITATION.bib` file, but with a DOI badge.
+Use `fallback = true` to generate citations from `Project.toml` metadata
+for packages without a `CITATION.bib` file or DOI badge. This can be noisy
+in large environments, so it is disabled by default.
 """
-function get_citations(;only_direct=false, filename="julia_citations.bib", badge=false)
-    pkg_citations = collect_citations(only_direct, badge=badge)
+function get_citations(;only_direct=false, filename="julia_citations.bib", badge=false, fallback=false)
+    pkg_citations = collect_citations(only_direct, badge=badge, fallback=fallback)
 
     if isempty(pkg_citations)
         @warn "No citations found in current environment"
@@ -134,6 +144,77 @@ function get_citation_badge(urlbadge)
     resp = HTTP.get(url, ["Accept"=>"application/x-bibtex"]; forwardheaders=true).body |> String
     bib = parse_entry(resp)
     return bib
+end
+
+"""
+    generate_fallback_citation(pkg)
+
+Generate a citation from the package's Project.toml metadata.
+Returns an OrderedDict containing a @misc BibTeX entry with package information.
+This is used as a fallback when no CITATION.bib file exists.
+"""
+function generate_fallback_citation(pkg)
+    project_path = joinpath(pkg.source, "Project.toml")
+    if !isfile(project_path)
+        @warn "No Project.toml found for $(pkg.name)"
+        return nothing
+    end
+
+    project = TOML.parsefile(project_path)
+
+    name = get(project, "name", pkg.name)
+    version = pkg.version
+    authors_raw = get(project, "authors", String[])
+
+    # Parse authors - they may be in format "Name <email>" or just "Name"
+    authors = String[]
+    for author in authors_raw
+        # Strip email if present
+        m = match(r"^([^<]+)", author)
+        if !isnothing(m)
+            push!(authors, strip(m.captures[1]))
+        else
+            push!(authors, strip(author))
+        end
+    end
+
+    # Get URL from repo or construct from package name
+    url = if haskey(project, "repo")
+        project["repo"]
+    else
+        # Try common Julia package URL patterns
+        "https://github.com/JuliaPackages/$(name).jl"
+    end
+
+    # Format authors for BibTeX (Last, First and Last, First format)
+    authors_str = if isempty(authors)
+        "Unknown"
+    else
+        join(authors, " and ")
+    end
+
+    # Generate a unique citation key
+    current_year = year(today())
+    citation_key = "$(name)_jl_$(current_year)"
+
+    # Create BibTeX entry
+    bibtex = """
+    @misc{$citation_key,
+      author = {$authors_str},
+      title = {$name.jl},
+      year = {$current_year},
+      url = {$url},
+      note = {Julia package version $version}
+    }
+    """
+
+    try
+        bib = parse_entry(bibtex)
+        return bib
+    catch e
+        @warn "Failed to parse generated citation for $(pkg.name)" exception=e
+        return nothing
+    end
 end
 
 """
