@@ -9,3 +9,5 @@ updates:
     directories: ["/", "/docs"]
     schedule:
       interval: "monthly"
+    ignore:
+      - dependency-name: "PkgCite" # Ignore package itself
