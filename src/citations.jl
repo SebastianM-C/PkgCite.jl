@@ -1,30 +1,51 @@
 function citation_path(pkg)
+    # Check for CITATION.cff first (preferred format)
+    cff_path = joinpath(pkg.source, "CITATION.cff")
+    if isfile(cff_path)
+        return (cff_path, :cff)
+    end
+
+    # Fall back to CITATION.bib
     bib_path = joinpath(pkg.source, "CITATION.bib")
     if isfile(bib_path)
-        bib_path
+        return (bib_path, :bib)
     end
+
+    return nothing
 end
 
 
 # Added `badge` flag to avoid breaking current tests
 function get_citation(pkg; badge=false)
-    bib_path = citation_path(pkg)
+    citation_info = citation_path(pkg)
     if badge == false
         urlbadge = nothing
     else
         urlbadge = get_badge(pkg)
     end
-    if !isnothing(bib_path)
-        @debug "Reading CITATION.bib for $(pkg.name)"
+    if !isnothing(citation_info)
+        citation_file, format = citation_info
+        @debug "Reading $(format == :cff ? "CITATION.cff" : "CITATION.bib") for $(pkg.name)"
         try
-            bib = import_bibtex(bib_path, check=:warn)
-            if isempty(bib)
-                @warn "The CITATION.bib file for $(pkg.name) is empty."
+            if format == :cff
+                # Import CFF and convert to internal format
+                entry = import_cff(citation_file)
+                # CFF import returns a single Entry, wrap it in an OrderedDict
+                bib = DataStructures.OrderedDict{String, Entry}()
+                # Use the package name as the citation key if no key exists
+                key = haskey(entry, :id) ? entry.id : pkg.name
+                bib[key] = entry
+                return bib
+            else
+                bib = import_bibtex(citation_file, check=:warn)
+                if isempty(bib)
+                    @warn "The CITATION.bib file for $(pkg.name) is empty."
+                end
+                return bib
             end
-
-            bib
         catch e
-            @warn "There was an error reading the CITATION.bib file for $(pkg.name)" exception=e
+            format_name = format == :cff ? "CITATION.cff" : "CITATION.bib"
+            @warn "There was an error reading the $format_name file for $(pkg.name)" exception=e
         end
     elseif !isnothing(urlbadge)
         get_citation_badge(urlbadge)
@@ -156,5 +177,47 @@ function get_badge(pkg)
         end
         return urlbadge
     end
+    return nothing
+end
+
+"""
+    bib_to_cff(bib_file::String, cff_file::String="CITATION.cff")
+
+Convert a BibTeX citation file to CFF (Citation File Format).
+Reads the first entry from the BibTeX file and exports it as CFF.
+
+# Arguments
+- `bib_file::String`: Path to the input CITATION.bib file
+- `cff_file::String`: Path to the output CITATION.cff file (default: "CITATION.cff")
+
+# Example
+```julia
+bib_to_cff("CITATION.bib", "CITATION.cff")
+```
+"""
+function bib_to_cff(bib_file::String, cff_file::String="CITATION.cff")
+    if !isfile(bib_file)
+        error("BibTeX file not found: $bib_file")
+    end
+
+    # Import the BibTeX file
+    bib = import_bibtex(bib_file, check=:warn)
+
+    if isempty(bib)
+        error("The BibTeX file is empty or could not be parsed")
+    end
+
+    # Get the first entry (most BibTeX citation files have a single main entry)
+    entry = first(values(bib))
+
+    # Export to CFF format
+    try
+        export_cff(entry; destination=cff_file)
+        @info "Successfully converted $bib_file to $cff_file"
+    catch e
+        @error "Failed to export to CFF format" exception=e
+        rethrow(e)
+    end
+
     return nothing
 end
