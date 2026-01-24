@@ -178,13 +178,8 @@ function generate_fallback_citation(pkg)
         end
     end
 
-    # Get URL from repo or construct from package name
-    url = if haskey(project, "repo")
-        project["repo"]
-    else
-        # Try common Julia package URL patterns
-        "https://github.com/JuliaPackages/$(name).jl"
-    end
+    # Get URL from package's git source (from Manifest.toml)
+    url = pkg.git_source
 
     # Format authors for BibTeX (Last, First and Last, First format)
     authors_str = if isempty(authors)
@@ -197,13 +192,13 @@ function generate_fallback_citation(pkg)
     current_year = year(today())
     citation_key = "$(name)_jl_$(current_year)"
 
-    # Create BibTeX entry
+    # Create BibTeX entry (only include url if available)
+    url_line = isnothing(url) ? "" : "\n      url = {$url},"
     bibtex = """
     @misc{$citation_key,
       author = {$authors_str},
       title = {$name.jl},
-      year = {$current_year},
-      url = {$url},
+      year = {$current_year},$url_line
       note = {Julia package version $version}
     }
     """
