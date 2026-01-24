@@ -55,7 +55,7 @@ function make_sentence(pkg_citations; cite_commands=Dict{String,String}(), jl=tr
 end
 
 """
-    get_tool_citation(io::IO=stdout; jl = true, texttt = false, copy = true, cite_commands=Dict{String,String}(), filename="julia_citations.bib", badge=false)
+    get_tool_citation(io::IO=stdout; jl = true, texttt = false, copy = true, cite_commands=Dict{String,String}(), filename="julia_citations.bib", badge=false, fallback=false)
 
 Print a sentence describing the packages used in the current environment.
 If you only want to consider the direct dependencies, you can set `only_direct=true`.
@@ -65,7 +65,10 @@ Package names can be wrapped in `texttt` by setting `texttt=true` and you can al
 the cite command used for each package by using `cite_commands=Dict("PackageName"=>"custom_cite")`.
 The filename of the .bib file can be passed via the `filename` keyword.
 Use `badge = true` to get the citations from packages without
-a `Citation.bib` file, but with a DOI badge.
+a `CITATION.bib` file, but with a DOI badge.
+Use `fallback = true` to generate citations from `Project.toml` metadata
+for packages without a `CITATION.bib` file or DOI badge. This can be noisy
+in large environments, so it is disabled by default.
 """
 function get_tool_citation(io::IO=stdout;
     jl = true,
@@ -74,9 +77,10 @@ function get_tool_citation(io::IO=stdout;
     only_direct = false,
     cite_commands=Dict{String,String}(),
     filename="julia_citations.bib",
-    badge=false)
+    badge=false,
+    fallback=false)
 
-    pkg_citations = collect_citations(only_direct, badge=badge)
+    pkg_citations = collect_citations(only_direct, badge=badge, fallback=fallback)
 
     cite_sentence = make_sentence(pkg_citations; cite_commands, jl, texttt)
     println(io, cite_sentence)

@@ -5,11 +5,13 @@ using Base: String
 export get_citations, get_tool_citation
 
 import Pkg
+import TOML
 using Bibliography: import_bibtex, export_bibtex, Entry
 using DataStructures
 using InteractiveUtils
 using BibParser: parse_entry
 using HTTP
+using Dates: year, today
 
 const DEFAULT_CITE = "\\cite"
 
