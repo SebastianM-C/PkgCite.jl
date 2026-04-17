@@ -1,5 +1,5 @@
 using PkgCite
-using PkgCite: collect_citations, bibliography, cited_packages, make_sentence
+using PkgCite: collect_citations, bibliography, cited_packages, make_sentence, generate_fallback_citation
 using InteractiveUtils
 using Bibliography
 using Test
@@ -174,6 +174,42 @@ end
             @test occursin("\\cite", sentence)
         catch e
             @warn "Skipping badge environment tests due to instantiation error" exception=(e, catch_backtrace())
+            @test_skip false
+        end
+    end
+
+    @testset "PkgCite using fallback" begin
+        fallback_env = "fallback_env"
+        Pkg.activate(fallback_env)
+
+        # Try to instantiate, but skip if it fails
+        try
+            Pkg.instantiate()
+            Pkg.status()
+
+            # Test without fallback - should find no citations for OrderedCollections
+            # (it doesn't have a CITATION.bib file)
+            citations_no_fallback = collect_citations(true, fallback=false)
+            pkgs_no_fallback = cited_packages(citations_no_fallback)
+            @test "OrderedCollections" ∉ pkgs_no_fallback
+
+            # Test with fallback - should now include OrderedCollections
+            citations_with_fallback = collect_citations(true, fallback=true)
+            pkgs_with_fallback = cited_packages(citations_with_fallback)
+            @test "OrderedCollections" ∈ pkgs_with_fallback
+
+            # Verify the fallback citation has expected structure
+            @test haskey(citations_with_fallback, "OrderedCollections")
+            bib = citations_with_fallback["OrderedCollections"]
+            @test !isempty(bib)
+
+            # Test that sentence is generated with fallback citations
+            sentence = make_sentence(citations_with_fallback)
+            @test occursin("Julia v$VERSION", sentence)
+            @test occursin("OrderedCollections.jl", sentence)
+            @test occursin("\\cite", sentence)
+        catch e
+            @warn "Skipping fallback environment tests due to instantiation error" exception=(e, catch_backtrace())
             @test_skip false
         end
     end
