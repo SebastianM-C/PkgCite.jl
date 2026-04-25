@@ -1,31 +1,95 @@
 function citation_path(pkg)
+    # Check for CITATION.cff first (preferred format)
+    cff_path = joinpath(pkg.source, "CITATION.cff")
+    if isfile(cff_path)
+        return (cff_path, :cff)
+    end
+
+    # Fall back to CITATION.bib
     bib_path = joinpath(pkg.source, "CITATION.bib")
     if isfile(bib_path)
-        bib_path
+        return (bib_path, :bib)
     end
+
+    return nothing
 end
 
+"""
+    parse_cff(filepath::AbstractString, key::AbstractString)
+
+Parse a CITATION.cff file and return a `BibInternal.Entry`.
+Uses `preferred-citation` if present, otherwise top-level metadata.
+"""
+function parse_cff(filepath::AbstractString, key::AbstractString)
+    cff = YAML.load_file(filepath)
+
+    # Use preferred-citation if available, otherwise top-level
+    data = get(cff, "preferred-citation", cff)
+
+    # Build BibTeX-style author string: "Given Family and Given Family"
+    authors_list = get(data, "authors", get(cff, "authors", []))
+    author_strs = String[]
+    for a in authors_list
+        given = get(a, "given-names", "")
+        family = get(a, "family-names", "")
+        push!(author_strs, strip("$given $family"))
+    end
+    author_str = join(author_strs, " and ")
+
+    entry_type = get(data, "type", "software")
+    fields = Dict{String,String}("_type" => entry_type, "author" => author_str)
+
+    haskey(data, "title") && (fields["title"] = string(data["title"]))
+    haskey(data, "doi") && (fields["doi"] = string(data["doi"]))
+    haskey(data, "url") && (fields["url"] = string(data["url"]))
+    !haskey(fields, "url") && haskey(data, "repository-code") && (fields["url"] = string(data["repository-code"]))
+    haskey(data, "journal") && (fields["journal"] = string(data["journal"]))
+    haskey(data, "volume") && (fields["volume"] = string(data["volume"]))
+    haskey(data, "issue") && (fields["number"] = string(data["issue"]))
+
+    if haskey(data, "date-released")
+        d = data["date-released"]
+        if d isa Dates.Date
+            fields["year"] = string(Dates.year(d))
+        else
+            # Try to extract year from string like "2024-01-15"
+            m = match(r"^(\d{4})", string(d))
+            !isnothing(m) && (fields["year"] = m.captures[1])
+        end
+    elseif haskey(data, "year")
+        fields["year"] = string(data["year"])
+    end
+
+    return BibInternal.Entry(key, fields)
+end
 
 # Added `badge` flag to avoid breaking current tests
 # Added `fallback` flag to generate citations from Project.toml metadata
 function get_citation(pkg; badge=false, fallback=false)
-    bib_path = citation_path(pkg)
+    citation_info = citation_path(pkg)
     if badge == false
         urlbadge = nothing
     else
         urlbadge = get_badge(pkg)
     end
-    if !isnothing(bib_path)
-        @debug "Reading CITATION.bib for $(pkg.name)"
+    if !isnothing(citation_info)
+        citation_file, format = citation_info
+        @debug "Reading $(format == :cff ? "CITATION.cff" : "CITATION.bib") for $(pkg.name)"
         try
-            bib = import_bibtex(bib_path, check=:warn)
-            if isempty(bib)
-                @warn "The CITATION.bib file for $(pkg.name) is empty."
+            if format == :cff
+                entry = parse_cff(citation_file, pkg.name)
+                bib = DataStructures.OrderedDict{String, Entry}(pkg.name => entry)
+                return bib
+            else
+                bib = import_bibtex(citation_file, check=:warn)
+                if isempty(bib)
+                    @warn "The CITATION.bib file for $(pkg.name) is empty."
+                end
+                return bib
             end
-
-            bib
         catch e
-            @warn "There was an error reading the CITATION.bib file for $(pkg.name)" exception=e
+            format_name = format == :cff ? "CITATION.cff" : "CITATION.bib"
+            @warn "There was an error reading the $format_name file for $(pkg.name)" exception=e
         end
     elseif !isnothing(urlbadge)
         get_citation_badge(urlbadge)
@@ -234,3 +298,4 @@ function get_badge(pkg)
     end
     return nothing
 end
+

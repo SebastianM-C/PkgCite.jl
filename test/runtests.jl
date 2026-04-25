@@ -1,5 +1,5 @@
 using PkgCite
-using PkgCite: collect_citations, bibliography, cited_packages, make_sentence, generate_fallback_citation
+using PkgCite: collect_citations, bibliography, cited_packages, make_sentence, generate_fallback_citation, parse_cff
 using InteractiveUtils
 using Bibliography
 using Test
@@ -90,12 +90,15 @@ end
     @testset "Only direct dependencies" begin
         citations = collect_citations(true)
         pkgs = cited_packages(citations)
-        @test only(pkgs) == "Symbolics"
+        @test "Symbolics" ∈ pkgs
+        # ArnoldiMethod has a CITATION.cff (v1.2.0), testing end-to-end CFF support
+        @test "ArnoldiMethod" ∈ pkgs
 
         # Test sentence structure without hard-coding exact citation keys
         sentence = make_sentence(citations)
         @test occursin("Julia v$VERSION", sentence)
         @test occursin("Symbolics.jl", sentence)
+        @test occursin("ArnoldiMethod.jl", sentence)
         @test occursin("\\cite", sentence)
 
         sentence_tt = make_sentence(citations, texttt=true)
@@ -211,6 +214,44 @@ end
         catch e
             @warn "Skipping fallback environment tests due to instantiation error" exception=(e, catch_backtrace())
             @test_skip false
+        end
+    end
+
+    @testset "CFF Support" begin
+        # Switch back to test_env which has ArnoldiMethod (CITATION.cff v1.2.0)
+        Pkg.activate(test_env)
+
+        @testset "parse_cff" begin
+            # Test parse_cff directly on ArnoldiMethod's CITATION.cff
+            arnoldi_pkg = first(pkg for pkg in values(Pkg.dependencies()) if pkg.name == "ArnoldiMethod")
+            cff_path = joinpath(arnoldi_pkg.source, "CITATION.cff")
+            entry = parse_cff(cff_path, "ArnoldiMethod")
+            @test entry isa Bibliography.Entry
+            @test occursin("Arnoldi", entry.title)
+            @test !isempty(entry.authors)
+        end
+
+        @testset "CFF file detection" begin
+            using PkgCite: citation_path
+
+            # ArnoldiMethod has CITATION.cff but no CITATION.bib
+            arnoldi_pkg = first(pkg for pkg in values(Pkg.dependencies()) if pkg.name == "ArnoldiMethod")
+            result = citation_path(arnoldi_pkg)
+            @test !isnothing(result)
+            path, format = result
+            @test format == :cff
+            @test endswith(path, "CITATION.cff")
+        end
+
+        @testset "CFF citation collected" begin
+            # Verify ArnoldiMethod is collected through the full pipeline
+            citations = collect_citations(true)
+            @test haskey(citations, "ArnoldiMethod")
+            bib = citations["ArnoldiMethod"]
+            @test !isempty(bib)
+            entry = first(values(bib))
+            @test entry isa Bibliography.Entry
+            @test occursin("Arnoldi", entry.title)
         end
     end
 end
