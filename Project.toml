@@ -17,7 +17,7 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 BibParser = "0.1, 0.2"
 Bibliography = "0.2, 0.3"
 DataStructures = "0.18, 0.19"
-HTTP = "0.9, 1"
+HTTP = "0.9, 1, 2.0"
 TOML = "1.0.3"
 julia = "1.6"
 [extras]
