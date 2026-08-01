@@ -15,7 +15,7 @@ TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 
 [compat]
 BibParser = "0.1, 0.2"
-Bibliography = "0.2, 0.3"
+Bibliography = "0.2, 0.3, 0.4"
 DataStructures = "0.18, 0.19"
 HTTP = "0.9, 1"
 TOML = "1.0.3"
