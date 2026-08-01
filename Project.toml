@@ -14,7 +14,7 @@ Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 
 [compat]
-BibParser = "0.1, 0.2"
+BibParser = "0.1, 0.2, 0.3"
 Bibliography = "0.2, 0.3"
 DataStructures = "0.18, 0.19"
 HTTP = "0.9, 1"
